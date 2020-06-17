@@ -6,7 +6,7 @@ from django.utils.html import mark_safe
 
 from api.models import ReportRecord, Factory, Image
 from .mixins import ExportCsvMixin, RestoreMixin
-
+from rangefilter.filter import DateRangeFilter
 
 
 class FactoryWithReportRecords(SimpleListFilter):
@@ -150,17 +150,15 @@ class ImageInlineForFactory(admin.TabularInline):
 
 class FactoryAdmin(admin.ModelAdmin, ExportCsvMixin):
     list_display = (
-        'get_name',
-        'created_at',
-        'lat',
-        'lng',
-        'landcode',
-        'sectcode',
-        'sectname',
-        'towncode',
-        'townname',
-        'factory_type',
         'id',
+        'updated_at',
+        'townname',
+        'sectname',
+        'sectcode',
+        'landcode',
+        'factory_type',
+        'source',
+        'get_name',
     )
     list_filter = (
         'cet_report_status',
@@ -168,6 +166,7 @@ class FactoryAdmin(admin.ModelAdmin, ExportCsvMixin):
         'factory_type',
         FactoryWithReportRecords,
         FactoryFilteredByCounty,
+        ('updated_at', DateRangeFilter),
     )
     ordering = ["-created_at"]
     actions = ["export_as_csv"]
